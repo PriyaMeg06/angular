@@ -1,0 +1,40 @@
+<div class="investment-list-container">
+  <h2>Investments</h2>
+
+  <ng-container *ngIf="loading$ | async; else loaded">
+    <div class="loading-indicator">Loading investments...</div>
+  </ng-container>
+
+  <ng-template #loaded>
+    <ng-container *ngIf="error$ | async; else noError">
+      <div class="error-message">
+        Error: {{ (error$ | async)?.message || 'Failed to load investments' }}
+      </div>
+    </ng-container>
+    <ng-template #noError>
+      <div *ngIf="investments$ | async as investments; else noInvestments">
+        <table>
+          <thead>
+            <tr>
+              <th>Asset Type</th>
+              <th>Quantity</th>
+              <th>Purchase Price</th>
+              <th>Purchase Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let investment of investments">
+              <td>{{ investment.assetType }}</td>
+              <td>{{ investment.quantity }}</td>
+              <td>{{ investment.purchasePrice | currencyFormat: 'INR' }}</td>
+              <td>{{ investment.purchaseDate | date }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #noInvestments>
+        <p>No investments found.</p>
+      </ng-template>
+    </ng-template>
+  </ng-template>
+</div>
