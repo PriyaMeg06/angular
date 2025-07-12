@@ -1,0 +1,37 @@
+<div class="dashboard-container">
+  <h1>Portfolio Dashboard</h1>
+
+  <ng-container *ngIf="loading$ | async; else loaded">
+    <div class="loading-indicator">Loading portfolio data...</div>
+  </ng-container>
+
+  <ng-template #loaded>
+    <ng-container *ngIf="error$ | async; else noError">
+      <div class="error-message">Error: {{ (error$ | async)?.message || 'Failed to load data' }}</div>
+    </ng-container>
+
+    <ng-template #noError>
+      <div *ngIf="performanceMetrics$ | async as performanceMetrics" class="metrics-container">
+        <div class="metric-card">
+          <h3>Total Value</h3>
+          <p>{{ performanceMetrics.totalValue | currencyFormat: 'INR' }}</p>
+        </div>
+        <div
+          class="metric-card"
+          [ngClass]="{
+            positive: performanceMetrics.changePercentage >= 0,
+            negative: performanceMetrics.changePercentage < 0
+          }"
+        >
+          <h3>Change (%)</h3>
+          <p>{{ performanceMetrics.changePercentage | number: '1.2-2' }}%</p>
+        </div>
+      </div>
+
+      <div *ngIf="chartData" class="chart-container">
+        <h2>Portfolio Performance Over Time</h2>
+        <app-interactive-chart [data]="chartData.data" [labels]="chartData.labels"></app-interactive-chart>
+      </div>
+    </ng-template>
+  </ng-template>
+</div>
