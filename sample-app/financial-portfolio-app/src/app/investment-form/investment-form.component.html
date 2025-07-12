@@ -1,0 +1,97 @@
+<div class="investment-form-container">
+  <h2>Add New Investment</h2>
+
+  <form [formGroup]="investmentForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="assetType">Asset Type:</label>
+      <input type="text" id="assetType" formControlName="assetType" />
+      <div
+        *ngIf="
+          assetType?.invalid && (assetType?.dirty || assetType?.touched)
+        "
+        class="error-message"
+      >
+        <div *ngIf="assetType?.errors?.['required']">
+          Asset type is required.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" formControlName="quantity" />
+      <div
+        *ngIf="quantity?.invalid && (quantity?.dirty || quantity?.touched)"
+        class="error-message"
+      >
+        <div *ngIf="quantity?.errors?.['required']">
+          Quantity is required.
+        </div>
+        <div *ngIf="quantity?.errors?.['min']">
+          Quantity must be at least 1.
+        </div>
+        <div *ngIf="quantity?.errors?.['pattern']">
+          Quantity must be a whole number.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="purchasePrice">Purchase Price:</label>
+      <input
+        type="number"
+        id="purchasePrice"
+        formControlName="purchasePrice"
+      />
+      <div
+        *ngIf="
+          purchasePrice?.invalid &&
+          (purchasePrice?.dirty || purchasePrice?.touched)
+        "
+        class="error-message"
+      >
+        <div *ngIf="purchasePrice?.errors?.['required']">
+          Purchase price is required.
+        </div>
+        <div *ngIf="purchasePrice?.errors?.['min']">
+          Purchase price must be greater than 0.
+        </div>
+        <div *ngIf="purchasePrice?.errors?.['pattern']">
+          Invalid price format (e.g., 100.00).
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="purchaseDate">Purchase Date:</label>
+      <input type="date" id="purchaseDate" formControlName="purchaseDate" />
+      <div
+        *ngIf="
+          purchaseDate?.invalid && (purchaseDate?.dirty || purchaseDate?.touched)
+        "
+        class="error-message"
+      >
+        <div *ngIf="purchaseDate?.errors?.['required']">
+          Purchase date is required.
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="investmentForm.invalid">
+      Add Investment
+    </button>
+
+    <div *ngIf="submissionSuccess" class="success-message">
+      Investment added successfully!
+    </div>
+    <div *ngIf="submissionError" class="error-message">
+      {{ submissionError }}
+    </div>
+  </form>
+  <div *ngIf="loading$ | async" class="loading-indicator">
+    Adding Investment...
+  </div>
+  <div *ngIf="error$ | async" class="error-message">
+    Error: {{ (error$ | async)?.message || 'An error occurred' }}
+  </div>
+</div>
